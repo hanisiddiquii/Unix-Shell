@@ -9,6 +9,7 @@
 #include "redirection.h"
 #include "history.h"
 #include "signals.h"
+#include "find.h"
 void execute(char *command)
 {
     int len = strlen(command) + 1;
@@ -54,6 +55,10 @@ void execute(char *command)
     else if (strcmp("echo", arguments[0]) == 0)
     {
         execute_echo(arg_count, arguments);
+    }
+    else if (strcmp("find", arguments[0]) == 0)
+    {
+        execute_find(arg_count, arguments);
     }
     else if (strcmp("pwd", arguments[0]) == 0)
     {
