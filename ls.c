@@ -4,8 +4,7 @@
 #include <assert.h>
 #include <time.h>
 bool not_hidden(const struct dirent *s)
-{
-    // checks if a file is hidden or not
+{ 
     if (strlen(s->d_name) > 0 && s->d_name[0] == '.')
     {
         return false;
