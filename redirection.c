@@ -28,19 +28,14 @@ void free_ptrs(int arg_count, char *arguments[])
 }
 void execute_redirection(char *comm)
 {
-    // flag for not printing color codes into the file
+    
     bool in = false, in_file = false;
-    // flag for checking the input '<' redirection
     bool out = false, out_file = false;
-    // flag for checking the output '>' or '>>' redirection
     bool append = false;
-    // for checking the append redirection '>>'
     char input_file[name_len];
-    // store the input file ka path name
-    int fd_in; // file descriptor for input file
+    int fd_in; 
     char output_file[name_len];
-    // path for output file
-    int fd_out; // file descriptor for output file
+    int fd_out; 
     input_file[0] = '\0', output_file[0] = '\0';
     size_t arg_len = strlen(comm) + 1;
     char *str = strtok(comm, " ");
@@ -65,11 +60,9 @@ void execute_redirection(char *comm)
     {
         if (strcmp(str, "<") == 0)
         {
-            // input redirection
-            if (in || out) // in case of consecutive redirection commands , no file provided
+            if (in || out) 
             {
                 fprintf(stderr, ERROR "shell : invalid redirection syntax unexpected token near <\n" RESET);
-                // error to exit the process , exiting .... free the pointers ...
                 free_ptrs(arg_count, arguments);
                 close(stdin_copy);
                 close(stdout_copy);
@@ -82,17 +75,15 @@ void execute_redirection(char *comm)
         }
         else if (strcmp(">", str) == 0)
         {
-            // output redirection
             if (in || out)
             {
                 fprintf(stderr, ERROR "shell : invalid redirection syntax unexpected token near >\n" RESET);
-                // error to exit the process , exiting .... free the pointers ...
                 free_ptrs(arg_count, arguments);
                 close(stdin_copy);
                 close(stdout_copy);
                 return;
             }
-            if (append) // in case of multiple output redirections , final one is taken to hold
+            if (append) 
                 append = false;
             out = true;
             out_file = true;
@@ -101,11 +92,11 @@ void execute_redirection(char *comm)
         }
         else if (strcmp(">>", str) == 0)
         {
-            // append output
+  
             if (in || out)
             {
                 fprintf(stderr, ERROR "shell : invalid redirection syntax unexpected token near >>\n" RESET);
-                // error to exit the process , exiting .... free the pointers ...
+  
                 free_ptrs(arg_count, arguments);
                 close(stdin_copy);
                 close(stdout_copy);
@@ -140,7 +131,6 @@ void execute_redirection(char *comm)
     if (in || out)
     {
         fprintf(stderr, ERROR "shell : invalid redirection syntax\n" RESET);
-        // error to exit the process , exiting .... free the pointers ...
         free_ptrs(arg_count, arguments);
         close(stdin_copy);
         close(stdout_copy);
@@ -151,7 +141,6 @@ void execute_redirection(char *comm)
         if (input_file[0] == '\0')
         {
             fprintf(stderr, ERROR "shell : no file given for input redirection\n" RESET);
-            // error to exit the process , exiting .... free the pointers ...
             free_ptrs(arg_count, arguments);
             close(stdin_copy);
             close(stdout_copy);
@@ -182,11 +171,10 @@ void execute_redirection(char *comm)
         if (output_file[0] == '\0')
         {
             fprintf(stderr, ERROR "shell : no file given for output redirection\n" RESET);
-            // error to exit the process , exiting .... free the pointers ...
             free_ptrs(arg_count, arguments);
             if (input_file)
                 close(fd_in);
-            int flag = dup2(stdin_copy, STDIN_FILENO); // restore the file descriptor
+            int flag = dup2(stdin_copy, STDIN_FILENO); 
             if (flag < 0)
             {
                 fprintf(stderr, ERROR "I/O error , Exiting shell ...............\n" RESET);
@@ -210,7 +198,7 @@ void execute_redirection(char *comm)
             perror(ERROR "shell : couldn't redirect, invalid output file ");
             if (input_file)
                 close(fd_in);
-            int flag = dup2(stdin_copy, STDIN_FILENO); // restore the file descriptor
+            int flag = dup2(stdin_copy, STDIN_FILENO); 
             if (flag < 0)
             {
                 fprintf(stderr, ERROR "I/O error , Exiting shell ...............\n" RESET);
@@ -228,7 +216,7 @@ void execute_redirection(char *comm)
         if (flag < 0)
         {
             perror(ERROR "shell : couldn't redirect, invalid input file ");
-            int flag = dup2(stdin_copy, STDIN_FILENO); // restore the file descriptor
+            int flag = dup2(stdin_copy, STDIN_FILENO); 
             if (input_file)
                 close(fd_in);
             if (flag < 0)
@@ -288,8 +276,7 @@ void execute_redirection(char *comm)
             fprintf(stderr, ERROR "ENTER A POSITIVE INTEGER FOR repeat TO EXECUTE, SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
             return;
         }
-        // else correct flags
-        // make a string now with apt flags
+        
         if (arguments[2] == NULL)
         {
             fprintf(stderr, ERROR "INVALID COMMAND , SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
