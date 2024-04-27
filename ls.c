@@ -17,12 +17,14 @@ char *get_file_permissions(char *file_path)
     // permission string is 10 char long
     struct stat st;
     int flag = stat(file_path, &st);
+    
     if (flag < 0)
     {
         perror(ERROR "FAILED TO FETCH FILE PERMISSIONS ");
         fprintf(stderr, RESET);
         return NULL;
     }
+    
     char *permissions = (char *)malloc(sizeof(char) * (10 + 1));
     int i = 0;
     if (flag == 0 && S_ISDIR(st.st_mode))
