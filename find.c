@@ -1,46 +1,101 @@
-#include "header.h"
-#include "find.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <dirent.h>
-
-void search_directory(char *dir_path, char *file_name);
+#include <sys/stat.h>
 
 void execute_find(int arg_count, char *argument[])
 {
     if (arg_count != 2)
     {
-        fprintf(stderr, ERROR "Invalid number of arguments. Usage: find <file_name>\n" RESET);
+        fprintf(stderr, "Usage: find <folder-name>\n");
         return;
     }
 
-    char *file_name = argument[1];
-    search_directory(".", file_name);
-}
+    char *folder_name = argument[1];
 
-void search_directory(char *dir_path, char *file_name)
-{
-    DIR *dir = opendir(dir_path);
+    DIR *dir = opendir("/");
     if (dir == NULL)
     {
-        perror(ERROR "Unable to open directory" RESET);
+        perror("Error opening root directory");
         return;
     }
 
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL)
     {
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-            continue;
-
-        char full_path[PATH_MAX];
-        snprintf(full_path, sizeof(full_path), "%s/%s", dir_path, entry->d_name);
-
         if (entry->d_type == DT_DIR)
         {
-            search_directory(full_path, file_name);
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            {
+                continue;
+            }
+
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "/%s", entry->d_name);
+
+            struct stat st;
+            if (stat(path, &st) == -1)
+            {
+                perror("Error stat");
+                continue;
+            }
+
+            if (S_ISDIR(st.st_mode))
+            {
+                if (strcmp(entry->d_name, folder_name) == 0)
+                {
+                    printf("%s\n", path);
+                }
+
+                // Recursively search in subdirectories
+                execute_find_in_directory(path, folder_name);
+            }
         }
-        else if (entry->d_type == DT_REG && strcmp(entry->d_name, file_name) == 0)
+    }
+
+    closedir(dir);
+}
+
+void execute_find_in_directory(const char *dir_path, const char *folder_name)
+{
+    DIR *dir = opendir(dir_path);
+    if (dir == NULL)
+    {
+        perror("Error opening directory");
+        return;
+    }
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL)
+    {
+        if (entry->d_type == DT_DIR)
         {
-            printf("%s\n", full_path);
+            if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+            {
+                continue;
+            }
+
+            char path[PATH_MAX];
+            snprintf(path, sizeof(path), "%s/%s", dir_path, entry->d_name);
+
+            struct stat st;
+            if (stat(path, &st) == -1)
+            {
+                perror("Error stat");
+                continue;
+            }
+
+            if (S_ISDIR(st.st_mode))
+            {
+                if (strcmp(entry->d_name, folder_name) == 0)
+                {
+                    printf("%s\n", path);
+                }
+
+                // Recursively search in subdirectories
+                execute_find_in_directory(path, folder_name);
+            }
         }
     }
 
