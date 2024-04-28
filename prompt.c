@@ -5,6 +5,9 @@
 
 void init_shell()
 {
+	system("clear");
+    printf("\e[32m\t\tWELCOME TO UNIX-SHELL\e[0m\n");
+    printf("\e[35m\tA Project by Mustafa, Laiba & Umair\e[0m\n");
     gethostname(HOSTNAME, name_len);      // get host name
     strcpy(USERNAME, getenv("USERNAME")); // get user name
     getcwd(cwd_path, name_len);

@@ -1,0 +1,20 @@
+history
+exit
+help
+help bg
+help replay
+exit
+pinfo
+history
+help
+help bg
+procmon
+clear
+exit
+help
+exit
+help
+help bg
+exit
+help
+exit

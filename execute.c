@@ -3,16 +3,23 @@
 #include "ls.h"
 #include "echo.h"
 #include "pwd.h"
+#include "replay.h"
 #include "pinfo.h"
+#include "bg.h"
+#include "system_command.h"
 #include "cd.h"
 #include "pipe.h"
+#include "jobs.h"
 #include "redirection.h"
 #include "history.h"
+#include "fg.h"
 #include "signals.h"
-#include "find.h"
+#include "procmon.h"
+#include "help.h"
 void execute(char *command)
 {
     int len = strlen(command) + 1;
+    // in the case of a null command string
     if (command == NULL)
         return;
 
@@ -31,9 +38,13 @@ void execute(char *command)
         return;
     }
     char *str = strtok(command, " ");
-    if (str == NULL) 
+    // printf("command is : %s \nstr is : %s\n", command, str);
+    //str contains the main command now
+    // note : strtok does allocates any memory to str, only a part of str, donot free str
+    if (str == NULL) // in case there exist no main command
         return;
     int arg_count = 0;
+    // char **arguments = (char **)malloc(len * sizeof(char *));
     char *arguments[len];
 
     while (str != NULL)
@@ -56,10 +67,6 @@ void execute(char *command)
     {
         execute_echo(arg_count, arguments);
     }
-    else if (strcmp("find", arguments[0]) == 0)
-    {
-        execute_find(arg_count, arguments);
-    }
     else if (strcmp("pwd", arguments[0]) == 0)
     {
         execute_pwd();
@@ -68,9 +75,23 @@ void execute(char *command)
     {
         history(arg_count, arguments);
     }
+    else if (strcmp("help", arguments[0]) == 0)
+    {
+        help(arg_count, arguments);
+    }
+    else if (strcmp("procmon", arguments[0]) == 0)
+    {
+        execute_procmon(arg_count, arguments);
+    }
     else if (strcmp("pinfo", arguments[0]) == 0)
     {
         execute_pinfo(arg_count, arguments);
+    }
+    else if (strcmp("fg", arguments[0]) == 0)
+    {
+        is_fg = 1;
+        execute_fg(arg_count, arguments);
+        is_fg = -1;
     }
     else if (strcmp("repeat", arguments[0]) == 0)
     {
@@ -85,7 +106,8 @@ void execute(char *command)
             fprintf(stderr, ERROR "ENTER A POSITIVE INTEGER FOR repeat TO EXECUTE, SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
             return;
         }
-        
+        // else correct flags
+        // make a string now with apt flags
         if (arguments[2] == NULL)
         {
             fprintf(stderr, ERROR "INVALID COMMAND , SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
@@ -106,6 +128,10 @@ void execute(char *command)
             strcpy(cpy2, cpy_command);
         }
     }
+    else if (strcmp("bg", arguments[0]) == 0)
+    {
+        execute_bg(arg_count, arguments);
+    }
     else if (strcmp("exit", arguments[0]) == 0)
     {
         write_back_history();
@@ -113,6 +139,14 @@ void execute(char *command)
         fprintf(stderr, PROMPT "EVERY MEETING HAS A PARTING ;(\nSEE YOU AGAIN SOON !!!!!!!" RESET);
         printf("\n\n\n");
         exit(0);
+    }
+    else if (strcmp("replay", arguments[0]) == 0)
+    {
+        execute_replay(arg_count, arguments);
+    }
+    else if (strcmp("jobs", arguments[0]) == 0)
+    {
+        execute_jobs(arg_count, arguments);
     }
     else if (strcmp("sig", arguments[0]) == 0)
     {
