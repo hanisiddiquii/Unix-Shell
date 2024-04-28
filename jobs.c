@@ -74,7 +74,7 @@ void remove_node(pid_t pid)
     {
         if (itr->proc_pid == pid)
         {
-            if (temp == NULL) 
+            if (temp == NULL) // first node
             {
                 proc_list.start = itr->next;
                 free(itr);
@@ -123,44 +123,41 @@ char *get_job_status(pid_t pid)
     FILE *flag_stat = fopen(proc_stat_path, "r");
     if (flag_stat == NULL)
     {
+        perror(ERROR "Failed to open process status file");
         return NULL;
     }
-    int itr = 0;
     char *read_line = NULL;
     size_t sz_read = 0;
     char *ret_val = NULL;
     while (getline(&read_line, &sz_read, flag_stat) != -1)
     {
-        itr++;
         read_line[strlen(read_line) - 1] = '\0';
-        if (itr == 3)
+        char *temp = strtok(read_line, ":");
+        if (temp != NULL && strcmp(temp, "State") == 0)
         {
-            char *temp = strtok(read_line, ":");
             temp = strtok(NULL, " \t");
             if (temp != NULL)
             {
-                ret_val = (char *)malloc(sizeof(char) * (strlen(temp) + 1));
-                strcpy(ret_val, temp);
-                free(read_line);
-                fclose(flag_stat);
-                return ret_val;
+                ret_val = strdup(temp);
+                break;
             }
-            else
-            {
-                free(read_line);
-                fclose(flag_stat);
-                err_code = 1;
-                return NULL;
-            }
-            break;
         }
-        free(read_line);
-        read_line = NULL;
     }
+    free(read_line);
+    fclose(flag_stat);
+    return ret_val;
 }
+
 void execute_jobs(int arg_count, char *argument[])
 {
-
+    // debug statements
+    printf("Arguments count: %d\n", arg_count);
+    printf("Arguments:\n");
+    for (int i = 0; i < arg_count; ++i) {
+        printf("[%d]: %s\n", i, argument[i]);
+    }
+    // debugging statements end here
+    
     if (proc_list.num_proc == 0)
     {
         fprintf(stderr, ERROR "jobs : no background process running currently\n" RESET);
@@ -171,34 +168,45 @@ void execute_jobs(int arg_count, char *argument[])
     for (int i = 1; i < arg_count && argument[i] != NULL; i++)
     {
         if (argument[i][0] == '-')
+{
+    if (argument[i][1] != '\0')
+    {
+        int itr = 1;
+        bool valid_flag = false; // Flag to track if any valid flag is found
+        while (argument[i][itr] != '\0')
         {
-            if (argument[i][1] != '\0')
+            if (argument[i][itr] == 's')
             {
-                int itr = 1;
-                while (argument[i][itr] != '\0')
-                {
-                    if (argument[i][itr] == 's')
-                        s_flag = true;
-                    if (argument[i][itr] == 'r')
-                        r_flag = true;
-                    else
-                    {
-                        fprintf(stderr, ERROR "Flag : %s , not an option\n", argument[i]);
-                        print_error_jobs();
-                        return;
-                    }
-
-                    itr++;
-                }
+                s_flag = true;
+                valid_flag = true;
+            }
+            else if (argument[i][itr] == 'r')
+            {
+                r_flag = true;
+                valid_flag = true;
             }
             else
             {
-                fprintf(stderr, ERROR "Not a valid flag\n");
-                print_error_jobs();
-                return;
+                // Only print an error if none of the characters match the expected flags
+                if (!valid_flag)
+                {
+                    fprintf(stderr, ERROR "Flag : %c , not an option\n", argument[i][itr]);
+                    print_error_jobs();
+                    return;
+                }
             }
+            itr++;
         }
     }
+    else
+    {
+        fprintf(stderr, ERROR "Not a valid flag\n");
+        print_error_jobs();
+        return;
+    }
+	}
+    }
+    // got the flags
     for (jobs *itr = proc_list.start; itr != NULL;)
     {
         char *proc_st = get_job_status(itr->proc_pid);
@@ -208,6 +216,7 @@ void execute_jobs(int arg_count, char *argument[])
                 fprintf(stderr, ERROR "unable to get process status \n");
             jobs *temp = itr;
             itr = itr->next;
+            // remove_node(temp->proc_pid);
             err_code = 0;
             continue;
         }
@@ -256,3 +265,4 @@ void execute_jobs(int arg_count, char *argument[])
         itr = itr->next;
     }
 }
+
