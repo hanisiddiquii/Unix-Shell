@@ -96,7 +96,7 @@ For more detailed usage instructions, refer to the documentation section below.
 
 ## Documentation
 
-Detailed documentation of the Unix Shell project can be found in the [docs](docs/) directory. It includes descriptions of various features, usage examples, and code documentation.
+Detailed documentation of the Unix Shell project can be found [here](/docs/Unix-Shell-Project-Report.docx). It includes descriptions of various features, usage examples, and code documentation.
 
 ## Contributing
 
