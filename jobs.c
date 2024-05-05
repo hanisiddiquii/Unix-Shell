@@ -156,7 +156,6 @@ void execute_jobs(int arg_count, char *argument[])
     for (int i = 0; i < arg_count; ++i) {
         printf("[%d]: %s\n", i, argument[i]);
     }
-    // debugging statements end here
     
     if (proc_list.num_proc == 0)
     {
@@ -172,8 +171,8 @@ void execute_jobs(int arg_count, char *argument[])
     if (argument[i][1] != '\0')
     {
         int itr = 1;
-        bool valid_flag = false; // Flag to track if any valid flag is found
-        while (argument[i][itr] != '\0')
+        bool valid_flag = false; // track if any valid flag is found
+        while (argument[i][itr] != '\0') 
         {
             if (argument[i][itr] == 's')
             {
@@ -187,7 +186,6 @@ void execute_jobs(int arg_count, char *argument[])
             }
             else
             {
-                // Only print an error if none of the characters match the expected flags
                 if (!valid_flag)
                 {
                     fprintf(stderr, ERROR "Flag : %c , not an option\n", argument[i][itr]);
@@ -216,7 +214,6 @@ void execute_jobs(int arg_count, char *argument[])
                 fprintf(stderr, ERROR "unable to get process status \n");
             jobs *temp = itr;
             itr = itr->next;
-            // remove_node(temp->proc_pid);
             err_code = 0;
             continue;
         }

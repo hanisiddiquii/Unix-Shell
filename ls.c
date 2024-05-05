@@ -13,8 +13,7 @@ bool not_hidden(const struct dirent *s)
 }
 char *get_file_permissions(char *file_path)
 {
-    // returns the malloced string of permission with given file path
-    // permission string is 10 char long
+
     struct stat st;
     int flag = stat(file_path, &st);
     

@@ -12,7 +12,6 @@ int main()
 {
     is_fg = -1;
     init_shell();
-    //signal();
     init_history();
     signal(SIGCHLD, SIGCHILD_HANDLER);
     signal(SIGINT, SIGINT_HANDLER);

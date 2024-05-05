@@ -11,22 +11,22 @@ void execute_procmon() {
     char status_path[256];
     char line[256];
 
-    // Open the /proc directory
+    // Open directory
     proc_dir = opendir("/proc");
     if (proc_dir == NULL) {
         perror("Error opening /proc directory");
         return;
     }
 
-    // Traverse the /proc directory
+    // Traverse directory part
     printf("PID\tPROCESS\n");
     while ((entry = readdir(proc_dir)) != NULL) {
-        // Check if the entry is a directory and represents a process
+        // Check if the entry is a directory
         if (entry->d_type == DT_DIR && atoi(entry->d_name) != 0) {
-            // Construct the path to the process status file
+            // Construct the path
             snprintf(status_path, sizeof(status_path), "/proc/%s/status", entry->d_name);
 
-            // Open the process status file
+            // Open status file
             status_file = fopen(status_path, "r");
             if (status_file != NULL) {
                 // Read the process name from the status file

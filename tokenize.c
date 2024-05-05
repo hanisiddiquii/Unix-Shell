@@ -68,7 +68,7 @@ void RemoveExtraSpaces(char **list)
             cpyCommand[i - 1] = '\0';
         else
             cpyCommand[i] = '\0';
-        // copy the string to original store placeholder
+        // copy the string to original store place holder
         strcpy(list[itr], cpyCommand);
     }
 }

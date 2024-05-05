@@ -21,12 +21,12 @@ char *remove_char_front_and_back(char *input, char ch)
 }
 char *get_file_name_from_path(char *file_path)
 {
-    if (file_path == NULL) // if an invalid file path is provided
+    if (file_path == NULL) // invalid path
         return NULL;
     char *x = (char *)malloc((strlen(file_path) + 1) * sizeof(char));
     strcpy(x, file_path);
     char *cpy = strstr(x, "/");
-    if (cpy == NULL) // file name itself provided ==> it is in the current working directory
+    if (cpy == NULL) // file name provided as it is in the current working directory
         return x;
     else
     {
@@ -34,12 +34,9 @@ char *get_file_name_from_path(char *file_path)
         do
         {
             lft = strlen(cpy) + 1;
-            // printf("lft is : %d\n", lft); //
-            x = &x[strlen(x) - lft + 2]; // rearranging the pointer to the string (pointer de-referencing) //
-            // printf("x is : %s\n", x); //
+            x = &x[strlen(x) - lft + 2]; // rearranging the pointer
             cpy = strstr(x, "/");
-            // printf("cpy is : %s\n", cpy); //
-        } while (cpy); // until cpy doesnt become null //
+        } while (cpy); // loop until cpy becomes null
     }
     return x;
 }

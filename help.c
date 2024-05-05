@@ -4,16 +4,16 @@
 #include <string.h>
 #include <stddef.h>
 #include "help.h"
-#include "header.h" // Include the shell header file for color definitions
+#include "header.h"
 
-// Define command structure
+// command structure
 typedef struct {
     const char *name;
     const char *syntax;
     const char *description;
 } Command;
 
-// Array of available commands and their help messages
+// Array of all commands
 Command commands[] = {
     {"bg", "bg [job_num]", "Continue the execution of a stopped background process."},
     {"cd", "cd [directory]", "Change the current working directory."},
@@ -29,34 +29,33 @@ Command commands[] = {
     {"sig", "sig <job_num> <signal>", "Send a signal to a background process."}
 };
 
-// Function to display help information
+//  help info
 void display_help(const char *command_name) {
     if (command_name == NULL) {
-        // Display list of all available commands
+        // all av commands
         printf("Available commands:\n");
         for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             printf("%s - %s %s%s\n", PROMPT, commands[i].name, RESET, commands[i].description);
         }
     } else {
-        // Find and display help message for the specified command
+        // help message display
         for (size_t i = 0; i < sizeof(commands) / sizeof(commands[0]); i++) {
             if (strcmp(command_name, commands[i].name) == 0) {
                 printf("%sUsage: %s%s\n%s%s\n", PROMPT, commands[i].syntax, RESET, YELLOW, commands[i].description);
                 return;
             }
         }
-        // Command not found
         printf("%sCommand '%s' not found. Use 'help' to see available commands.%s\n", ERROR, command_name, RESET);
     }
 }
 
-// Function to handle the help command
+//help commaand
 void help(int arg_count, char *argument[]) {
     if (arg_count == 1) {
-        // Display general help information
+        // Display help info
         display_help(NULL);
     } else if (arg_count == 2) {
-        // Display help for specified command
+        // Display help for command
         display_help(argument[1]);
     } else {
         printf("%sUsage: help [command]%s\n", ERROR, RESET);

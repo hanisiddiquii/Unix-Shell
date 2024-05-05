@@ -33,8 +33,7 @@ void execute_pinfo(int arg_count, char *argument[])
         return;
     }
     int itr = 0;
-    // read through the file line by line ufffff, see documentation on man page
-    // using getline to fetch line by line
+    // read through the file line by line and it uses getline
     char *read_line = NULL;
     size_t sz_read = 0;
     proc_info st_proc;
@@ -73,7 +72,7 @@ void execute_pinfo(int arg_count, char *argument[])
         read_line = NULL;
     }
     fclose(flag_stat);
-    // now get the executables
+    // executables
     size_t flag_exe = readlink(proc_exe_path, read_line, name_len);
     if (flag_exe < 0)
     {
@@ -94,7 +93,7 @@ void execute_pinfo(int arg_count, char *argument[])
     {
         if (strstr(read_line, cwd_path) != NULL)
         {
-            // path will be of the form cwdpath/some_path/
+            // path will be like cwdpath/some_path/
             int len = strlen(cwd_path);
             char *rel_dir = (char *)malloc((strlen(read_line) - len + 1) * sizeof(char));
             strcpy(rel_dir, &read_line[len]);
@@ -110,7 +109,7 @@ void execute_pinfo(int arg_count, char *argument[])
     }
     if (pid_process == SHELL_PID)
         strcat(st_proc.proc_status, "+");
-    // Print the data ..
+    // Printing data ki
     print_WHITE();
     printf("PID-- %d\nPROCESS STATUS -- %s\nMEMORY -- %s\nEXECUTABLE PATH -- %s\n", st_proc.proc_pid, st_proc.proc_status, st_proc.virtual_mem_size, st_proc.exec_path);
     print_RESET();

@@ -12,7 +12,7 @@ void print_error()
 }
 void execute_replay(int arg_count, char *argument[])
 {
-    //  replay -command echo "hi" -interval 3 -period 6
+    //  replay -command echo "hi" -interval 3 -period 6 (way of running command)
     printf("Executing replay command \n");
     bool command_present = false;
     bool interval_present = false;
@@ -111,7 +111,6 @@ void execute_replay(int arg_count, char *argument[])
     }
     if (command_present && interval_present && period_present)
     {
-        //   printf("command is : %s\n interval is %d\nperiod is %d\n", cpy_command, interval, period);
         char cpy[name_len];
         strcpy(cpy, cpy_command);
         char sleep_command[50], cpy_sleep[50];
@@ -126,4 +125,3 @@ void execute_replay(int arg_count, char *argument[])
         }
     }
 }
-// got the flags

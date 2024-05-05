@@ -29,7 +29,6 @@ void fg(int job_num)
     char proc_name[name_len];
     strcpy(proc_name, proc->proc_name);
     // bring process into foreground by giving apt permissions to it
-    //ignore I/O output for shell
     print_GREEN();
     printf("Process %s with pid %d continuing in foreground .... \n", proc_name, proc_pid);
     print_RESET();

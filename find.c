@@ -48,7 +48,7 @@ void execute_find(int arg_count, char *argument[])
                     printf("%s\n", path);
                 }
 
-                // Recursively search in subdirectories
+                // Recursively search 
                 execute_find_in_directory(path, folder_name);
             }
         }
@@ -93,7 +93,7 @@ void execute_find_in_directory(const char *dir_path, const char *folder_name)
                     printf("%s\n", path);
                 }
 
-                // Recursively search in subdirectories
+                // Recursively search
                 execute_find_in_directory(path, folder_name);
             }
         }

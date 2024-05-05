@@ -8,17 +8,15 @@ void execute_cd(int arg_count, char **argument)
         cd("~");
     else if (arg_count == 2)
     {
-        //  char *path = remove_char_front_and_back(argument[0], '\042'); // double quotes
-        //  path = remove_char_front_and_back(path, '\047');              // single quotes
-        //  printf("path is : %s\n", path);
+     
         cd(argument[1]);
     }
     else
     {
-        fprintf(stderr, ERROR "TOO MANY ARGUMENTS FOR cd, GIVE ONLY ONE ARGUMENT\n" RESET);
+        fprintf(stderr, ERROR "TOO MANY ARGUMENTS FOR cd, ONLY ONE ARGUMENT REQUIRED\n" RESET);
     }
 }
-// handles the request considering only one input is provided
+// runs on only one input
 void cd(char *path)
 {
     char *final_dir = (char *)malloc(name_len * sizeof(char));

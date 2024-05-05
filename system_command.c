@@ -23,12 +23,9 @@ void execute_sys_command(int arg_count, char *argument[])
         argument[arg_count - 1][strlen(argument[arg_count - 1]) - 1] = '\0';
         argument[arg_count] = NULL;
     }
-    // we execute the system commands in foreground mode
+    // system command run in foreground
     if (is_background_proc == false)
     {
-        // not a background process , wait parent till child finish
-        // printf(ERROR "%d \n", getpid());
-        // should be NULL terminated
         argument[arg_count] = NULL;
         pid_t proc_fork = fork();
         if (proc_fork < 0)
@@ -38,8 +35,7 @@ void execute_sys_command(int arg_count, char *argument[])
         }
         else if (proc_fork == 0)
         {
-            //  printf(ERROR "CHILD %d \n", getpid());
-            // in child
+            // child
             signal(SIGINT, SIG_DFL);
             signal(SIGTSTP, SIG_DFL);
             setpgid(0, 0);
@@ -54,34 +50,26 @@ void execute_sys_command(int arg_count, char *argument[])
         }
         else
         {
-            // IN PARENT PROCESS , control passed on to the child
-            // wait for the child to execute using wait();
+            // control passed on to the child
             dup2(copy_stdin_fileno, 0);
             dup2(copy_stdout_fileno, 1);
             signal(SIGTTIN, SIG_IGN);
-            // stop the terminal input for the parent //
+            // stop the terminal input for the parent
             signal(SIGTTOU, SIG_IGN);
-            // stop the terminal output to the terminal for the parent, ignore any input/output interrupts from parent //
+            // here we are stopping the terminal output to the terminal for the parent
             int st_wait;
             // set the group id of parent process as the pid of the parent, the child sets it's group as child ka pid
             setpgid(proc_fork, 0);
-            // tcsetpgrp  set the terminal display permission to the parent process
+            // for setting the terminal display permission to the parent process
             tcsetpgrp(STDIN_FILENO, proc_fork);
 
-            waitpid(proc_fork, &st_wait, WUNTRACED); // wait till the child proc dies of
-            // st_wait contains the error code
-
+            waitpid(proc_fork, &st_wait, WUNTRACED); 
             pid_t pgid_parent = getpgrp();
-            // printf(WHITE "PROCFORK %d : %d \n", proc_fork, pgid_parent);
-            // printf(ERROR "PARENT %d \n", getpid());
-
             tcsetpgrp(STDIN_FILENO, pgid_parent);
-
+            //input
             signal(SIGTTIN, SIG_DFL);
-            // can continue for taking input
             signal(SIGTTOU, SIG_DFL);
-            // can continue for taking output
-            // printf(WHITE "PROCESS EXECUTED\n");
+            
             if (WIFSTOPPED(st_wait))
             {
                 add_node(argument[0], proc_fork);

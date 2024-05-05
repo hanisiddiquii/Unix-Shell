@@ -8,7 +8,7 @@ void init_history()
     last_hist_entry_added = 0;
     if (hist_file == NULL)
     {
-        hist_file = fopen(HISTORY_FILE_NAME, "w"); // create the file
+        hist_file = fopen(HISTORY_FILE_NAME, "w"); // create file
         fclose(hist_file);
         return;
     }
@@ -143,7 +143,6 @@ void history(int arg_count, char *argument[])
             fprintf(stderr, ERROR "HISTORY ONLY HAS 20 ENTRIES TO SHOW, DISPLAYING THEM\n" RESET);
             idx = 20;
         }
-        // last_hist contains place for
         int start_idx = hist_count % 20;
         for (int i = last_hist_entry_added;; i--)
         {

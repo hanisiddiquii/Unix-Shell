@@ -19,7 +19,6 @@
 void execute(char *command)
 {
     int len = strlen(command) + 1;
-    // in the case of a null command string
     if (command == NULL)
         return;
 
@@ -38,13 +37,9 @@ void execute(char *command)
         return;
     }
     char *str = strtok(command, " ");
-    // printf("command is : %s \nstr is : %s\n", command, str);
-    //str contains the main command now
-    // note : strtok does allocates any memory to str, only a part of str, donot free str
-    if (str == NULL) // in case there exist no main command
+    if (str == NULL) // if no main command exist 
         return;
     int arg_count = 0;
-    // char **arguments = (char **)malloc(len * sizeof(char *));
     char *arguments[len];
 
     while (str != NULL)
@@ -106,8 +101,6 @@ void execute(char *command)
             fprintf(stderr, ERROR "ENTER A POSITIVE INTEGER FOR repeat TO EXECUTE, SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
             return;
         }
-        // else correct flags
-        // make a string now with apt flags
         if (arguments[2] == NULL)
         {
             fprintf(stderr, ERROR "INVALID COMMAND , SYNTAX : repeat <number_of_repetitions> < command_to_be_repeated >\n" RESET);
